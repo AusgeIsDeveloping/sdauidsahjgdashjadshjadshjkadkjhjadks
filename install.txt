@@ -1,0 +1,28 @@
+import subprocess
+import sys
+
+packages = [
+    "pywin32",
+    "browser-cookie3",
+    "pycryptodome",
+    "discord-webhook",
+    "requests",
+    "browser-history",
+    "prettytable",
+    "getmac",
+    "psutil",
+    "py-cpuinfo",
+    "pyautogui"
+]
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+for package in packages:
+    try:
+        install(package)
+        print(f"{package} erfolgreich installiert.")
+    except Exception as e:
+        print(f"Fehler bei {package}: {e}")
+
+print("Fertig.")
