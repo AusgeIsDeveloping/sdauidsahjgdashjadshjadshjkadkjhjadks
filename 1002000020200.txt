@@ -1,0 +1,50 @@
+import discord
+from discord.ext import commands
+import pygame
+import os
+
+TOKEN = "MTQ3MTg5OTIyOTk3MzY0NzM3MA."
+TOKEN2 = "GpC38w.3CSYmJOx9Go8p5zjMGy-QfSf0_1C6pRjPMEBXA"
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+TEMP_FILE = "soundfile"
+
+# Pygame Audio initialisieren
+pygame.mixer.init()
+
+
+@bot.command()
+async def sound(ctx):
+    # Prüfen ob Datei angehängt wurde
+    if len(ctx.message.attachments) == 0:
+        await ctx.send("Bitte eine Sound-Datei anhängen!")
+        return
+
+    attachment = ctx.message.attachments[0]
+
+    # Datei speichern (Original-Dateiname behalten)
+    filename = TEMP_FILE + os.path.splitext(attachment.filename)[1]
+    await attachment.save(filename)
+
+    try:
+        pygame.mixer.music.load(filename)
+        pygame.mixer.music.play()
+        await ctx.send("Sound wird auf dem PC abgespielt 🔊")
+    except Exception as e:
+        await ctx.send(f"Fehler beim Abspielen: {e}")
+
+
+@bot.command()
+async def stopsound(ctx):
+    if pygame.mixer.music.get_busy():
+        pygame.mixer.music.stop()
+        await ctx.send("Sound gestoppt ⛔")
+    else:
+        await ctx.send("Es läuft gerade kein Sound.")
+
+
+bot.run(TOKEN+TOKEN2)
